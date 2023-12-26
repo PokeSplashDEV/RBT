@@ -13,11 +13,11 @@ import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;
 
 public class Tourney {
-	private String date;
+	private Status status;
 	private HashSet<Participant> participants;
 
 	public Tourney() {
-		date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		status = Status.PENDING;
 		participants = new HashSet<>();
 	}
 
@@ -28,6 +28,10 @@ public class Tourney {
 		} else {
 			return false;
 		}
+	}
+
+	public HashSet<Participant> getParticipants() {
+		return participants;
 	}
 
 	public boolean removeParticipant(ServerPlayerEntity player) {
@@ -52,6 +56,10 @@ public class Tourney {
 		return null;
 	}
 
+	public Status getStatus() {
+		return status;
+	}
+
 	public ArrayList<Exception> start() {
 
 		ArrayList<Exception> exceptions = new ArrayList<>();
@@ -65,6 +73,8 @@ public class Tourney {
 		} catch (Exception e) {
 			exceptions.add(e);
 		}
+
+		status = Status.STARTED;
 
 		return exceptions;
 	}

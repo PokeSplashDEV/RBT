@@ -6,6 +6,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.pokesplash.rbt.Rbt;
+import org.pokesplash.rbt.config.Status;
 import org.pokesplash.rbt.util.LuckPermsUtils;
 import org.pokesplash.rbt.util.Utils;
 
@@ -35,6 +36,14 @@ public class LeaveCommand {
 		if (Rbt.tourney == null) {
 			context.getSource().sendMessage(Text.literal(
 					Utils.formatMessage("§cThere is no active RBT.",
+							context.getSource().isExecutedByPlayer())
+			));
+			return 1;
+		}
+
+		if (Rbt.tourney.getStatus().equals(Status.STARTED)) {
+			context.getSource().sendMessage(Text.literal(
+					Utils.formatMessage("§cYou can not leave an RBT that has started.",
 							context.getSource().isExecutedByPlayer())
 			));
 			return 1;

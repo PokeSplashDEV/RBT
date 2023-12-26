@@ -64,9 +64,17 @@ public class RerollCommand {
 
 			PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
 
+			Pokemon oldPokemon = party.get(slot - 1);
+
+			if (oldPokemon == null) {
+				context.getSource().sendMessage(Text.literal("§cNo Pokemon found in slot " + slot));
+				return 1;
+			}
+
+
 			Pokemon newPokemon = CobblemonUtils.getRandomPokemon();
 
-			Rbt.tourney.getParticipant(player).swapPokemon(party.get(slot - 1),
+			Rbt.tourney.getParticipant(player).swapPokemon(oldPokemon,
 					newPokemon);
 
 			party.remove(new PartyPosition(slot - 1));

@@ -34,6 +34,9 @@ public class BaseCommand {
 		registeredCommand.addChild(new CreateCommand().build());
 		registeredCommand.addChild(new JoinCommand().build());
 		registeredCommand.addChild(new LeaveCommand().build());
+		registeredCommand.addChild(new StartCommand().build());
+		registeredCommand.addChild(new EndCommand().build());
+		registeredCommand.addChild(new ParticipantCommand().build());
 
 	}
 
