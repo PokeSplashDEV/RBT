@@ -27,7 +27,7 @@ public class EndCommand {
 						.suggests((ctx, builder) -> {
 							for (ServerPlayerEntity player :
 									ctx.getSource().getServer().getPlayerManager().getPlayerList()) {
-								builder.suggest(player.getDisplayName().getString());
+								builder.suggest(player.getName().getString());
 							}
 							return builder.buildFuture();
 						})

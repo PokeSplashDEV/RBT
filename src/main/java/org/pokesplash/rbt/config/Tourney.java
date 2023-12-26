@@ -23,7 +23,7 @@ public class Tourney {
 
 	public boolean addParticipant(ServerPlayerEntity player) {
 		if (getParticipant(player) == null) {
-			participants.add(new Participant(player.getUuid(), player.getDisplayName().getString()));
+			participants.add(new Participant(player.getUuid(), player.getName().getString()));
 			return true;
 		} else {
 			return false;

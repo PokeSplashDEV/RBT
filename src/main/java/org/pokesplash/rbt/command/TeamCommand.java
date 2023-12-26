@@ -64,16 +64,9 @@ public class TeamCommand {
 			return 1;
 		}
 
-		PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
-
 		String output = "§3" + player.getName().getString() + " Team\n";
 
-		for (int x=0; x < 6; x++) {
-			Pokemon pokemon = party.get(x);
-
-			if (pokemon == null) {
-				continue;
-			}
+		for (Pokemon pokemon : Rbt.tourney.getParticipant(player).getPokemon()) {
 
 			output += "§b- " + pokemon.getDisplayName().getString() + "\n";
 		}
