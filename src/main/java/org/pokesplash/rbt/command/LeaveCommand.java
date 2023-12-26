@@ -52,9 +52,13 @@ public class LeaveCommand {
 		boolean hasJoined = Rbt.tourney.removeParticipant(context.getSource().getPlayer());
 
 		if (hasJoined) {
-			context.getSource().sendMessage(Text.literal("§bYou have left the RBT."));
+			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+					"§bYou have left the RBT.", context.getSource().isExecutedByPlayer()
+			)));
 		} else {
-			context.getSource().sendMessage(Text.literal("§bYou have not joined the RBT."));
+			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+					"§bYou have not joined the RBT.", context.getSource().isExecutedByPlayer()
+			)));
 		}
 
 		return 1;

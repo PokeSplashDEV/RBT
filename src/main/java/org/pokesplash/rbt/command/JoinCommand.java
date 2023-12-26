@@ -54,9 +54,13 @@ public class JoinCommand {
 		boolean hasJoined = Rbt.tourney.addParticipant(context.getSource().getPlayer());
 
 		if (hasJoined) {
-			context.getSource().sendMessage(Text.literal("§bYou have joined the RBT."));
+			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+					"§bYou have joined the RBT.", context.getSource().isExecutedByPlayer()
+			)));
 		} else {
-			context.getSource().sendMessage(Text.literal("§bYou have already joined the RBT."));
+			context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+					"§bYou have already joined the RBT.", context.getSource().isExecutedByPlayer()
+			)));
 		}
 
 		return 1;
