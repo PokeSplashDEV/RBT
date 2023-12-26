@@ -201,9 +201,9 @@ public abstract class Utils {
 	 */
 	public static String formatMessage(String message, Boolean isPlayer) {
 		if (isPlayer) {
-			return message.trim();
+			return Rbt.config.getPrefix() + " " + message.trim();
 		} else {
-			return message.replaceAll("§[0-9a-fk-or]", "").trim();
+			return Rbt.config.getPrefix() + " " + message.replaceAll("§[0-9a-fk-or]", "").trim();
 		}
 	}
 
@@ -312,7 +312,7 @@ public abstract class Utils {
 		ArrayList<ServerPlayerEntity> players = new ArrayList<>(server.getPlayerManager().getPlayerList());
 
 		for (ServerPlayerEntity pl : players) {
-			pl.sendMessage(Text.literal(message));
+			pl.sendMessage(Text.literal(Rbt.config.getPrefix() + " " + message));
 		}
 	}
 }

@@ -1,10 +1,9 @@
 package org.pokesplash.rbt.command;
 
 import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.api.storage.party.PartyPosition;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.server.command.CommandManager;
@@ -16,22 +15,25 @@ import org.pokesplash.rbt.util.CobblemonUtils;
 import org.pokesplash.rbt.util.LuckPermsUtils;
 import org.pokesplash.rbt.util.Utils;
 
-public class RerollCommand {
+import java.util.HashSet;
+
+public class TeamCommand {
 	public LiteralCommandNode<ServerCommandSource> build() {
-		return CommandManager.literal("roll")
+		return CommandManager.literal("team")
 				.requires(ctx -> {
 					if (ctx.isExecutedByPlayer()) {
 						return LuckPermsUtils.hasPermission(ctx.getPlayer(),
-								CommandHandler.basePermission + ".user");
+								CommandHandler.basePermission + ".team");
 					} else {
 						return true;
 					}
 				})
 				.executes(this::usage)
-				.then(CommandManager.argument("slot", IntegerArgumentType.integer(1, 6))
+				.then(CommandManager.argument("player", StringArgumentType.string())
 						.suggests((ctx, builder) -> {
-							for (int x = 1; x < 7; x++) {
-								builder.suggest(x);
+							for (ServerPlayerEntity player :
+									ctx.getSource().getServer().getPlayerManager().getPlayerList()) {
+								builder.suggest(player.getName().getString());
 							}
 							return builder.buildFuture();
 						})
@@ -41,52 +43,44 @@ public class RerollCommand {
 
 	public int run(CommandContext<ServerCommandSource> context) {
 
-		if (!context.getSource().isExecutedByPlayer()) {
-			context.getSource().sendMessage(Text.literal("This command must be executed by a player"));
-			return 1;
-		}
-
 		// If no active tourney, dont do anything.
 		if (Rbt.tourney == null) {
 			context.getSource().sendMessage(Text.literal(
-					Utils.formatMessage("§cThere is no active RBT.",
+					Utils.formatMessage("§cThere is no RBT currently.",
 							context.getSource().isExecutedByPlayer())
 			));
 			return 1;
 		}
 
-		int slot = IntegerArgumentType.getInteger(context, "slot");
+		String playerArg = StringArgumentType.getString(context, "player");
 
-		ServerPlayerEntity player = context.getSource().getPlayer();
+		ServerPlayerEntity player = context.getSource().getServer().getPlayerManager().getPlayer(playerArg);
 
+		if (player == null) {
+			context.getSource().sendMessage(Text.literal(
+					Utils.formatMessage("§cPlayer " + playerArg + " could not be found.",
+							context.getSource().isExecutedByPlayer())
+			));
+			return 1;
+		}
 
-		try {
+		PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
 
-			PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
+		String output = "§3" + player.getName().getString() + " Team\n";
 
-			Pokemon oldPokemon = party.get(slot - 1);
+		for (int x=0; x < 6; x++) {
+			Pokemon pokemon = party.get(x);
 
-			if (oldPokemon == null) {
-				context.getSource().sendMessage(Text.literal(Utils.formatMessage(
-						"§cNo Pokemon found in slot " + slot, context.getSource().isExecutedByPlayer()
-				)));
-				return 1;
+			if (pokemon == null) {
+				continue;
 			}
 
-
-			Pokemon newPokemon = CobblemonUtils.getRandomPokemon();
-
-			Rbt.tourney.getParticipant(player).swapPokemon(oldPokemon,
-					newPokemon);
-
-			party.remove(new PartyPosition(slot - 1));
-
-			party.add(newPokemon);
-
-		} catch (Exception e) {
-			context.getSource().sendMessage(Text.literal(Utils.formatMessage("§c" + e.getMessage(),
-					context.getSource().isExecutedByPlayer())));
+			output += "§b- " + pokemon.getDisplayName().getString() + "\n";
 		}
+
+		context.getSource().sendMessage(Text.literal(Utils.formatMessage(
+				output.trim(), context.getSource().isExecutedByPlayer()
+		)));
 
 
 		return 1;
@@ -94,7 +88,7 @@ public class RerollCommand {
 
 	public int usage(CommandContext<ServerCommandSource> context) {
 		context.getSource().sendMessage(Text.literal(
-				Utils.formatMessage("§2RBT - Roll\n§a- rbt roll <slot>",
+				Utils.formatMessage("§2RBT - Team\n§a- rbt team <player>",
 						context.getSource().isExecutedByPlayer())
 		));
 

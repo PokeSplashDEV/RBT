@@ -37,7 +37,7 @@ public class BaseCommand {
 		registeredCommand.addChild(new StartCommand().build());
 		registeredCommand.addChild(new EndCommand().build());
 		registeredCommand.addChild(new ParticipantCommand().build());
-
+		registeredCommand.addChild(new TeamCommand().build());
 	}
 
 	public int run(CommandContext<ServerCommandSource> context) {

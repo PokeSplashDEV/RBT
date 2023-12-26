@@ -7,10 +7,12 @@ import org.pokesplash.rbt.util.Utils;
 import java.util.concurrent.CompletableFuture;
 
 public class Config {
+	private String prefix;
 	private int pokemonAmount;
 	private int rerollAmount;
 
 	public Config() {
+		prefix = "§3[§bRBT§3]";
 		pokemonAmount = 4;
 		rerollAmount = 1;
 	}
@@ -20,6 +22,7 @@ public class Config {
 				"config.json", el -> {
 					Gson gson = Utils.newGson();
 					Config cfg = gson.fromJson(el, Config.class);
+					prefix = cfg.getPrefix();
 					pokemonAmount = cfg.getPokemonAmount();
 					rerollAmount = cfg.getRerollAmount();
 				});
@@ -47,5 +50,9 @@ public class Config {
 
 	public int getRerollAmount() {
 		return rerollAmount;
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 }
