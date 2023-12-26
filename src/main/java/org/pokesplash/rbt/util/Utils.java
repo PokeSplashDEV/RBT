@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import org.pokesplash.rbt.Rbt;
 
 import java.io.File;
@@ -17,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -301,5 +305,14 @@ public abstract class Utils {
 		tag.putString("id", id);
 		tag.putInt("Count", 1);
 		return ItemStack.fromNbt(tag);
+	}
+
+	public static void broadcastMessage(String message) {
+		MinecraftServer server = Rbt.server;
+		ArrayList<ServerPlayerEntity> players = new ArrayList<>(server.getPlayerManager().getPlayerList());
+
+		for (ServerPlayerEntity pl : players) {
+			pl.sendMessage(Text.literal(message));
+		}
 	}
 }
